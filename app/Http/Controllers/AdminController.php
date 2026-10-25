@@ -171,7 +171,13 @@ class AdminController extends Controller
     {
         $data = $this->validatedPainting($request);
         $data['painter_id'] = Painter::query()->value('id') ?? abort(404, 'Profil pelukis belum tersedia.');
-        $data['image'] = $request->file('image')?->store('paintings', 'public');
+        
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('paintings', 'public');
+        } else {
+            $data['image'] = null;
+        }
+
         Painting::create($data);
 
         return redirect()->route('admin.paintings.index')->with('success', 'Karya berhasil ditambahkan.');
@@ -188,14 +194,18 @@ class AdminController extends Controller
     {
         $data = $this->validatedPainting($request);
         $oldImage = $painting->image;
+
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('paintings', 'public');
+            
+            if ($oldImage) {
+                Storage::disk('public')->delete($oldImage);
+            }
+        } else {
+            unset($data['image']);
         }
-        $painting->update($data);
 
-        if (isset($data['image']) && $oldImage) {
-            Storage::disk('public')->delete($oldImage);
-        }
+        $painting->update($data);
 
         return redirect()->route('admin.paintings.index')->with('success', 'Karya berhasil diperbarui.');
     }
