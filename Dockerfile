@@ -1,6 +1,6 @@
 FROM php:8.2-fpm
 
-# Install dependensi sistem, Nginx, dan Node.js
+# Install dependensi sistem, Nginx, dan Node.js (untuk build aset Vite/Tailwind)
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -22,22 +22,20 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
-# Salin SEMUA file project terlebih dahulu (termasuk package.json & composer.json)
+# Salin semua file project ke dalam container
 COPY . .
 
 # Install dependensi PHP (Laravel)
 RUN composer install --no-dev --optimize-autoloader
 
-# Install dependensi Frontend & Build aset (Vite / Tailwind) karena file package.json sudah ada
+# Install dependensi Frontend & Build aset (Vite / Tailwind)
 RUN npm install && npm run build
 
-# Hak akses folder storage & bootstrap/cache
+# Atur hak akses folder storage & bootstrap/cache
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
 EXPOSE 8080
 
-# Jalankan config clear agar membaca environment variables dari Render
 RUN php artisan config:clear
 
-# Jalankan server web langsung
 CMD php artisan serve --host=0.0.0.0 --port=$PORT
