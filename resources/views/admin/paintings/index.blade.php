@@ -22,11 +22,9 @@
                     <tr>
                         <td>
                             <div class="d-flex align-items-center gap-3">
-                                {{-- Cek apakah kolom image ada isinya dan filenya benar-benar ada --}}
-                                @if(!empty($painting->image) && file_exists(public_path('storage/' . $painting->image)))
-                                    <img class="admin-thumbnail" src="{{ asset('storage/' . $painting->image) }}" alt="{{ $painting->title }}">
+                                @if(!empty($painting->image))
+                                    <img class="admin-thumbnail" src="{{ $painting->image }}" alt="{{ $painting->title }}">
                                 @else
-                                    {{-- Kalau kosong/tidak ada, otomatis pakai kotak huruf inisial yang rapi --}}
                                     <div class="admin-thumbnail art-placeholder" style="--art-hue: {{ ($painting->id * 41) % 360 }}">{{ strtoupper(substr($painting->title, 0, 1)) }}</div>
                                 @endif
                                 <strong>{{ $painting->title }}</strong>

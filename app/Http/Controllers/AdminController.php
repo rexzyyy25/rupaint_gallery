@@ -173,7 +173,8 @@ class AdminController extends Controller
         $data['painter_id'] = Painter::query()->value('id') ?? abort(404, 'Profil pelukis belum tersedia.');
         
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('paintings', 'public');
+            $file = $request->file('image');
+            $data['image'] = 'data:' . $file->getMimeType() . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
         } else {
             $data['image'] = null;
         }
@@ -193,14 +194,10 @@ class AdminController extends Controller
     public function update(Request $request, Painting $painting)
     {
         $data = $this->validatedPainting($request);
-        $oldImage = $painting->image;
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('paintings', 'public');
-            
-            if ($oldImage) {
-                Storage::disk('public')->delete($oldImage);
-            }
+            $file = $request->file('image');
+            $data['image'] = 'data:' . $file->getMimeType() . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
         } else {
             unset($data['image']);
         }
@@ -216,11 +213,7 @@ class AdminController extends Controller
             return back()->with('error', 'Karya ini terhubung dengan riwayat pesanan, jadi tidak dapat dihapus. Ubah statusnya menjadi tidak tersedia.');
         }
 
-        $image = $painting->image;
         $painting->delete();
-        if ($image) {
-            Storage::disk('public')->delete($image);
-        }
 
         return redirect()->route('admin.paintings.index')->with('success', 'Karya berhasil dihapus.');
     }
