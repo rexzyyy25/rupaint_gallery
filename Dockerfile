@@ -1,6 +1,6 @@
 FROM php:8.2-fpm
 
-# Install dependensi sistem & paket pendukung PostgreSQL
+# Install dependensi sistem, Nginx, dan Node.js (untuk build aset Vite)
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -10,7 +10,9 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     zip \
     unzip \
-    nginx
+    nginx \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
 
 # Install ekstensi PHP
 RUN docker-php-ext-install pdo_mysql pdo_pgsql pgsql mbstring exif pcntl bcmath gd
@@ -22,8 +24,11 @@ WORKDIR /var/www
 
 COPY . .
 
-# Install dependensi Laravel
+# Install dependensi PHP (Laravel)
 RUN composer install --no-dev --optimize-autoloader
+
+# Install dependensi Frontend & Build aset (Vite / Tailwind)
+RUN npm install && npm run build
 
 # Hak akses folder storage & bootstrap/cache
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
