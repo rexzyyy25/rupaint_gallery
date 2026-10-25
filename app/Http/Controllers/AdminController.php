@@ -140,15 +140,15 @@ class AdminController extends Controller
             'exhibition_experience' => ['nullable', 'string', 'max:10000'],
         ]);
 
-        $oldImage = $painter->certificate_image;
+        // Konversi foto sertifikat ke Base64 agar tersimpan permanen di database PostgreSQL
         if ($request->hasFile('certificate_image')) {
-            $data['certificate_image'] = $request->file('certificate_image')->store('certificates', 'public');
+            $file = $request->file('certificate_image');
+            $data['certificate_image'] = 'data:' . $file->getMimeType() . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
+        } else {
+            unset($data['certificate_image']); // Pertahankan sertifikat lama jika tidak upload baru
         }
-        $painter->update($data);
 
-        if (isset($data['certificate_image']) && $oldImage) {
-            Storage::disk('public')->delete($oldImage);
-        }
+        $painter->update($data);
 
         return back()->with('success', 'Informasi sertifikat dan pengalaman pameran diperbarui.');
     }

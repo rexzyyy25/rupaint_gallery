@@ -12,7 +12,8 @@
         @if($painter->certificate_image)
             <div class="mb-4">
                 <label class="form-label d-block">Foto sertifikat saat ini</label>
-                <img class="certificate-admin-preview" src="{{ asset('storage/'.$painter->certificate_image) }}" alt="Foto sertifikat saat ini">
+                {{-- Tampilkan gambar Base64 dari database PostgreSQL --}}
+                <img class="certificate-admin-preview" src="{{ $painter->certificate_image }}" alt="Foto sertifikat saat ini">
             </div>
         @endif
         <div class="mb-3">

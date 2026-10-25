@@ -12,7 +12,8 @@
     <section class="row g-4 align-items-center">
         <div class="col-lg-6">
             @if($painter->certificate_image)
-                <img class="certificate-image" src="{{ asset('storage/'.$painter->certificate_image) }}" alt="Sertifikat {{ $painter->certificate_title ?: 'penghargaan pelukis' }}">
+                {{-- Tampilkan gambar Base64 dari database PostgreSQL --}}
+                <img class="certificate-image" src="{{ $painter->certificate_image }}" alt="Sertifikat {{ $painter->certificate_title ?: 'penghargaan pelukis' }}">
             @else
                 <div class="certificate-image-placeholder" role="img" aria-label="Foto sertifikat belum diunggah">
                     <span>Foto sertifikat belum diunggah</span>
