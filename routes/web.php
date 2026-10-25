@@ -1,5 +1,7 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\{AdminController,AuthController,CertificateController,HomeController,OrderController,PaintingController};
 
 Route::middleware('guest')->group(function () {
@@ -40,4 +42,14 @@ Route::middleware('auth')->group(function () {
         Route::put('/certificate', [AdminController::class, 'updateCertificate'])->name('certificate.update');
         Route::resource('paintings', AdminController::class)->except(['show']);
     });
+});
+
+// Route Darurat untuk Migrate Database di Render Free Plan
+Route::get('/run-migrations-darurat', function () {
+    try {
+        Artisan::call('migrate', ['--force' => true]);
+        return "SUKSES! Tabel database PostgreSQL berhasil dibuat!";
+    } catch (\Exception $e) {
+        return "Gagal: " . $e->getMessage();
+    }
 });
