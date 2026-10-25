@@ -23,7 +23,8 @@
                         <td>
                             <div class="d-flex align-items-center gap-3">
                                 @if($painting->image)
-                                    <img class="admin-thumbnail" src="{{ asset('storage/'.$painting->image) }}" alt="">
+                                    {{-- Menggunakan asset() dengan pengecekan path langsung --}}
+                                    <img class="admin-thumbnail" src="{{ asset('storage/' . $painting->image) }}" alt="{{ $painting->title }}" onerror="this.onerror=null; this.src='{{ asset($painting->image) }}';">
                                 @else
                                     <div class="admin-thumbnail art-placeholder" style="--art-hue: {{ ($painting->id * 41) % 360 }}">{{ strtoupper(substr($painting->title, 0, 1)) }}</div>
                                 @endif
