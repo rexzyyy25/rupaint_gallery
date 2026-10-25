@@ -31,5 +31,5 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
 
 EXPOSE 8080
 
-# Jalankan config clear dan migrate otomatis saat container start
+# Jalankan clear config, migrate otomatis, lalu jalankan server
 CMD php artisan config:clear && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT
