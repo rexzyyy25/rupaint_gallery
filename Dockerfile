@@ -1,6 +1,6 @@
 FROM php:8.2-fpm
 
-# Install dependensi sistem, Nginx, dan Node.js (untuk build aset Vite/Tailwind)
+# Install dependensi sistem dan ekstensi PHP
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -10,11 +10,8 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     zip \
     unzip \
-    nginx \
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs
+    nginx
 
-# Install ekstensi PHP
 RUN docker-php-ext-install pdo_mysql pdo_pgsql pgsql mbstring exif pcntl bcmath gd
 
 # Install Composer
@@ -22,16 +19,13 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
-# Salin semua file project ke dalam container
+# Salin file project
 COPY . .
 
-# Install dependensi PHP (Laravel)
+# Install dependensi PHP
 RUN composer install --no-dev --optimize-autoloader
 
-# Install dependensi Frontend & Build aset (Vite / Tailwind)
-RUN npm install && npm run build
-
-# Atur hak akses folder storage & bootstrap/cache
+# Atur hak akses folder
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
 EXPOSE 8080
