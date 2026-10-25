@@ -5,6 +5,10 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\EnsureAdmin;
 
+// Paksa agar cache driver otomatis jadi 'file' jika belum diset atau nyangkut ke database
+$_ENV['CACHE_DRIVER'] = $_ENV['CACHE_DRIVER'] ?? 'file';
+putenv('CACHE_DRIVER=file');
+
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(web: __DIR__.'/../routes/web.php', commands: __DIR__.'/../routes/console.php', health: '/up')
     ->withMiddleware(function (Middleware $middleware) {
