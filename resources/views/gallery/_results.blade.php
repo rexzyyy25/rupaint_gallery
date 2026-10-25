@@ -11,7 +11,8 @@
             <div class="col-sm-9 col-lg-6">
                 <a href="{{ route('gallery.show', $featuredPainting) }}" class="card art-card exhibition-art-card h-100 text-decoration-none">
                     @if($featuredPainting->image)
-                        <img class="art-placeholder art-image" src="{{ asset('storage/'.$featuredPainting->image) }}" alt="{{ $featuredPainting->title }}">
+                        {{-- Ubah ke Base64 langsung dari database --}}
+                        <img class="art-placeholder art-image" src="{{ $featuredPainting->image }}" alt="{{ $featuredPainting->title }}">
                     @else
                         <div class="art-placeholder" style="--art-hue: {{ ($featuredPainting->id * 41) % 360 }}">{{ strtoupper(substr($featuredPainting->title, 0, 1)) }}</div>
                     @endif
@@ -33,7 +34,8 @@
         <div class="col-sm-6 col-lg-4">
             <a href="{{ route('gallery.show', $painting) }}" class="card art-card h-100 text-decoration-none">
                 @if($painting->image)
-                    <img class="art-placeholder art-image" src="{{ asset('storage/'.$painting->image) }}" alt="{{ $painting->title }}">
+                    {{-- Ubah ke Base64 langsung dari database --}}
+                    <img class="art-placeholder art-image" src="{{ $painting->image }}" alt="{{ $painting->title }}">
                 @else
                     <div class="art-placeholder" style="--art-hue: {{ ($painting->id * 41) % 360 }}">{{ strtoupper(substr($painting->title, 0, 1)) }}</div>
                 @endif
