@@ -1,0 +1,3 @@
+<?php
+use Illuminate\Database\Migrations\Migration;use Illuminate\Database\Schema\Blueprint;use Illuminate\Support\Facades\Schema;
+return new class extends Migration{public function up(){Schema::create('paintings',function(Blueprint $t){$t->id();$t->foreignId('painter_id')->constrained()->cascadeOnDelete();$t->foreignId('category_id')->nullable()->constrained()->nullOnDelete();$t->string('title');$t->text('description')->nullable();$t->string('image')->nullable();$t->string('size')->nullable();$t->string('material')->nullable();$t->unsignedSmallInteger('year')->nullable();$t->decimal('price',15,2)->default(100000);$t->enum('status',['available','sold','unavailable'])->default('available');$t->timestamps();});}public function down(){Schema::dropIfExists('paintings');}};
