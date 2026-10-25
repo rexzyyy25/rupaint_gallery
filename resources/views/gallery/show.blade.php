@@ -4,9 +4,11 @@
 <div class="container py-5">
     <div class="row g-5 align-items-center">
         <div class="col-lg-6">
-            @if($painting->image)
-                <img class="detail-art art-image" src="{{ asset('storage/'.$painting->image) }}" alt="{{ $painting->title }}">
+            @if(!empty($painting->image))
+                {{-- Tampilkan gambar Base64 dari database --}}
+                <img class="detail-art art-image" src="{{ $painting->image }}" alt="{{ $painting->title }}">
             @else
+                {{-- Fallback placeholder jika kosong --}}
                 <div class="detail-art" style="--art-hue: {{ ($painting->id * 41) % 360 }}">{{ strtoupper(substr($painting->title, 0, 1)) }}</div>
             @endif
         </div>
