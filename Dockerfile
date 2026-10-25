@@ -25,8 +25,9 @@ COPY . .
 # Install dependensi PHP
 RUN composer install --no-dev --optimize-autoloader
 
-# Atur hak akses folder
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+# Atur hak akses folder storage & bootstrap/cache agar aman dari error 419 Page Expired
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
+    && chmod -R 777 /var/www/storage /var/www/bootstrap/cache
 
 EXPOSE 8080
 
