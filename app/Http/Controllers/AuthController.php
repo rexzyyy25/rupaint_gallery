@@ -90,4 +90,34 @@ class AuthController extends Controller
 
         return redirect()->route('login')->with('success', 'Kamu berhasil keluar.');
     }
+
+    // ==========================================
+    // FUNGSI KHUSUS API / ANDROID KOTLIN (RETROFIT)
+    // ==========================================
+    public function apiLogin(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string'],
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        // Validasi kecocokan user dan password
+        if (! $user || ! Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'message' => 'Email atau kata sandi salah.'
+            ], 401);
+        }
+
+        // Buat token Sanctum untuk aplikasi Android
+        $token = $user->createToken('AndroidAppToken')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Login berhasil',
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => $user
+        ], 200);
+    }
 }
